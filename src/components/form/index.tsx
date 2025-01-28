@@ -26,6 +26,12 @@ export default function FormWithFeedback() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     
+    setErrors({ 
+      name: "",
+      email: "",
+      cep: ""
+    });
+    
     event.preventDefault();
 
     if (!validate({ submittedData, isEditting, formData, setErrors })) return;
@@ -55,10 +61,8 @@ export default function FormWithFeedback() {
         setErrors({ ...errors, cep: "Invalid CEP." });
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error:", error.message);
-        setErrors({ ...errors, request: error.message });
-      }
+      console.log(errors)
+      setErrors({ ...errors, request: "Erro na api, tente novamente." });
     } finally {
       setIsSubmitting(false);
     }
@@ -98,10 +102,12 @@ export default function FormWithFeedback() {
     }
   }, [isEditting]);
 
+  console.log(errors);
+
   return (
     <div className={styles.formContainer}>
       { isEditting ? <h2>Edite seu endereço</h2> : <h2>Cadastre seu endereço</h2>}
-      <form onSubmit={handleSubmit}  className="space-y-4">
+      <form onSubmit={handleSubmit}>
         <Input 
           name="name"
           label="Nome" 
