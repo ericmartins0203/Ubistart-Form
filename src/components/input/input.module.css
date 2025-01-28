@@ -1,0 +1,46 @@
+.inputContainer {   
+  position: relative;
+  flex-direction: column;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.inputContainer label {
+  position: absolute;
+  margin-bottom: 5px;
+  color: black;
+  font-size: 12px;
+  top: -2px;
+  left: 6px;
+  background-color: transparent;
+  padding: 0 5px;
+}
+
+.inputContainer input {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  border-bottom: 1px solid #ccc;
+}
+
+.inputContainer input:focus {
+  outline: none;
+  border-color: #0070f3;
+}
+
+.inputContainer p {
+  color: red;
+  font-size: 12px;
+  margin: 0;
+}
+
+div.error input {
+  border-bottom: 1px solid red;
+}
+
+.disabledLabel {
+  color: #b0b0b0; 
+  opacity: 0.6; 
+}
