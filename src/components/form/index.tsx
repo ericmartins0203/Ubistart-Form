@@ -61,7 +61,6 @@ export default function FormWithFeedback() {
         setErrors({ ...errors, cep: "Invalid CEP." });
       }
     } catch (error) {
-      console.log(errors)
       setErrors({ ...errors, request: "Erro na api, tente novamente." });
     } finally {
       setIsSubmitting(false);
@@ -101,8 +100,6 @@ export default function FormWithFeedback() {
       setFormData({ name: "", email: "", cep: ""});
     }
   }, [isEditting]);
-
-  console.log(errors);
 
   return (
     <div className={styles.formContainer}>
