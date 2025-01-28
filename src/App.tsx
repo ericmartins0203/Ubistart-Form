@@ -9,7 +9,6 @@ import Input from './components/input';
 function App() {
 
   const [ isOpen, setIsOpen ] = useState(false);
-  const [ isFiltering, setIsFiltering ] = useState(false);
   const [ filter, setFilter ] = useState("");
 
   return (
@@ -22,13 +21,7 @@ function App() {
             label="Filtro"
             handleChange={(e) => setFilter(e.target.value)}
             errors={{}}
-            disabled= {!isFiltering}
           />
-          <button 
-            onClick={() =>setIsFiltering(!isFiltering)}
-          >
-        { !isFiltering ? "Filtrar" : "Limpar"}
-          </button>
           <button 
             onClick={() =>setIsOpen(true)}
           >

@@ -12,7 +12,7 @@ export default function List({setIsOpen, filter}: IProps) {
 
   const [ selectedData, setSelectedData ] = useState<IFormatData[]>([]);
 
-  const { submittedData, setSubmittedData, setIsEditting } = useContext(DataContext)
+  const { submittedData, setSubmittedData, setIsEditting,  } = useContext(DataContext)
 
   const handleEdit = (data: IFormatData) => {
     setIsOpen(true);
@@ -22,6 +22,7 @@ export default function List({setIsOpen, filter}: IProps) {
   const handleDelete = (id: number) => {
     const updatedData = submittedData.filter((data) => data.id !== id);
     setSubmittedData(updatedData);
+    localStorage.setItem('submittedData', JSON.stringify(updatedData));
   };
 
   useEffect(() => {
