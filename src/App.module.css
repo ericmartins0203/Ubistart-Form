@@ -27,6 +27,7 @@ main {
 
 .buttonContainer  input {
   max-width: 120px;
+  margin-bottom: -6px
 }
 
 @media screen and (max-width: 600px) {
