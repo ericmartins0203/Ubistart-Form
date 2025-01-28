@@ -1,0 +1,44 @@
+#root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+}
+
+.buttonContainer h2 {
+  font-size: 18px;
+}
+
+.buttonContainer  input {
+  max-width: 120px;
+}
+
+@media screen and (max-width: 600px) {
+
+  .header {
+    justify-content: flex-end;
+  }
+
+  .header h2 {
+    display: none
+  }
+
+  .buttonContainer {
+    gap: 6px;
+  }
+
+  .buttonContainer  input {
+    max-width: 60px;
+  }
+}

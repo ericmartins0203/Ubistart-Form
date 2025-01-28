@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { IFormatData } from "../../interface";
 import { DataContext } from "../../provider/DataContext";
-import { validate } from "../../utils/validate.utils";
+import { validate } from "./validate";
 
-interface IHandleChangeEvent extends React.ChangeEvent<HTMLInputElement> {
-  target: HTMLInputElement & EventTarget;
-}
+import styles from "./form.module.css";
+import Input from "../input";
+
 
 export default function FormWithFeedback() {
   const [formData, setFormData] = useState<IFormatData>({
@@ -16,12 +16,19 @@ export default function FormWithFeedback() {
   const [errors, setErrors] = useState<Partial<IFormatData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { submittedData, setSubmittedData } = useContext(DataContext)
+  const { 
+    submittedData, 
+    setSubmittedData, 
+    isEditting, 
+    setIsEditting,
+    saveData
+  } = useContext(DataContext)
 
-  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleSubmit = async (event: React.FormEvent) => {
+    
     event.preventDefault();
 
-    if (!validate({ submittedData, formData, setErrors })) return;
+    if (!validate({ submittedData, isEditting, formData, setErrors })) return;
 
     setIsSubmitting(true);
 
@@ -29,9 +36,19 @@ export default function FormWithFeedback() {
       const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${formData.cep.replace("-", "")}`);
 
       if (response.ok) {
-        const newEntry = { ...formData, id: submittedData.length + 1 };
-
-        setSubmittedData([...submittedData, newEntry]);
+        if (isEditting) {
+          const updatedData  = submittedData.map((data) => (
+            data.id === formData.id ? { ...isEditting, ...formData } : data
+          ));
+          setSubmittedData(updatedData);
+          saveData(updatedData);
+          setIsEditting(null);
+        } else {
+          const newEntry = { ...formData, id: submittedData.length + 1 };
+          const newData = [...submittedData, newEntry]
+          setSubmittedData(newData);
+          saveData(newData)
+        }
 
         setFormData({ name: "", email: "", cep: "" });
       } else {
@@ -42,68 +59,74 @@ export default function FormWithFeedback() {
     }
   };
 
-  const handleChange = (e: IHandleChangeEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    if (!name) {
+      console.error("Error: Missing name property.");
+      return;
+    }
+
     let newValue = value;
 
-    if (name === "cep") {
-      newValue = value.replace(/\D/g, "").replace(/(\d{5})(\d)/, "$1-$2");
+    if (value === "") {
+      setFormData({ ...formData, [name]: "" });
+      return;
     }
 
-    if (name === "name") {
+    if ( name === "cep") {
+      newValue = value.replace(/\D/g, "").replace(/(\d{5})(\d)/, "$1-$2")
+    } else if (name === "name") {
       newValue = value.replace(/\d/g, "");
+    } else {
+      newValue = value
     }
-
+    
     setFormData({ ...formData, [name]: newValue });
   };
 
+  useEffect(() => {
+    if (isEditting) {
+      setFormData(isEditting);
+    } else {
+      setFormData({ name: "", email: "", cep: ""});
+    }
+  }, [isEditting]);
+
   return (
-    <div className="max-w-md mx-auto mt-8">
-      <form className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded"
-          />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-        </div>
+    <div className={styles.formContainer}>
+      { isEditting ? <h2>Edite seu endereço</h2> : <h2>Cadastre seu endereço</h2>}
+      <form onSubmit={handleSubmit}  className="space-y-4">
+        <Input 
+          name="name"
+          label="Nome" 
+          value={formData.name} 
+          handleChange={handleChange} 
+          errors={errors} 
+        />
 
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded"
-          />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-        </div>
+        <Input 
+          name="email"
+          label="Email" 
+          value={formData.email} 
+          handleChange={handleChange} 
+          errors={errors} 
+        />
 
-        <div>
-          <label className="block text-sm font-medium">CEP</label>
-          <input
-            type="text"
-            name="cep"
-            value={formData.cep}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded"
-          />
-          {errors.cep && <p className="text-red-500 text-sm">{errors.cep}</p>}
-        </div>
+        <Input 
+          name="cep"
+          label="CEP" 
+          value={formData.cep} 
+          handleChange={handleChange} 
+          errors={errors} 
+        />
 
         <button
-          onClick={(e) => handleSubmit(e)}
+          type="submit"
           disabled={isSubmitting}
-          className={`w-full px-4 py-2 text-white rounded ${
-            isSubmitting ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-          }`}
+          className={` ${ isSubmitting ? "sending" : "" }`}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Enviando..." : "Enviar"}
         </button>
       </form>
     </div>
