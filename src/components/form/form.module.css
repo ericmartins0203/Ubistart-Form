@@ -14,12 +14,27 @@
   z-index: 1;
 }
 
+.formContainer form {
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
 .formContainer h2 {
   text-align: center;
   margin-bottom: 20px;
 } 
 
 .formContainer button {
-  margin-top: 20px;
-  width: 100%;
+  width: calc(100% - 4px);
+  max-width: unset;
+  border: none;
+  margin-left: 6px
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin: 0;
+
 }

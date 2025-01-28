@@ -13,7 +13,7 @@ export default function FormWithFeedback() {
     email: "",
     cep: "",
   });
-  const [errors, setErrors] = useState<Partial<IFormatData>>({});
+  const [errors, setErrors] = useState<Partial<IFormatData & { request?: string }>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { 
@@ -53,6 +53,11 @@ export default function FormWithFeedback() {
         setFormData({ name: "", email: "", cep: "" });
       } else {
         setErrors({ ...errors, cep: "Invalid CEP." });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error:", error.message);
+        setErrors({ ...errors, request: error.message });
       }
     } finally {
       setIsSubmitting(false);
@@ -116,11 +121,14 @@ export default function FormWithFeedback() {
         <Input 
           name="cep"
           label="CEP" 
+          maxLength={9}
+          pattern="\d{5}-?\d{3}"
           value={formData.cep} 
           handleChange={handleChange} 
           errors={errors} 
         />
-
+        
+        <p className={styles.error}>{errors.request}</p>
         <button
           type="submit"
           disabled={isSubmitting}
