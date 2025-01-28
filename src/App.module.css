@@ -2,6 +2,11 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
+main {
+  max-width: 1366px;
+  margin: 0 auto;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
